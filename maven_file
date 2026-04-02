@@ -1,0 +1,595 @@
+Below is the **full step-by-step procedure with code** for **Assignment III**: create a Maven project in Git, add Java code and unit test, push/clone it, build with Maven, and run it through a Jenkins pipeline. Based on your uploaded assignment. 
+
+# 1. Create a Git Repository and Maven Project Structure
+
+## Step 1: Create project folder
+
+Open terminal and run:
+
+```bash
+mkdir SimpleCalculatorApp
+cd SimpleCalculatorApp
+git init
+```
+
+## Step 2: Create Maven folder structure
+
+Run:
+
+```bash
+mkdir -p src/main/java/com/example
+mkdir -p src/test/java/com/example
+```
+
+If you are on Windows CMD, use:
+
+```bash
+mkdir src\main\java\com\example
+mkdir src\test\java\com\example
+```
+
+## Step 3: Create required files
+
+Create these files:
+
+* `pom.xml`
+* `src/main/java/com/example/App.java`
+* `src/test/java/com/example/AppTest.java`
+
+You can create them in VS Code.
+
+Open project in VS Code:
+
+```bash
+code .
+```
+
+---
+
+# 2. Write the Maven `pom.xml`
+
+Create `pom.xml` and paste this code:
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>SimpleCalculatorApp</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>SimpleCalculatorApp</name>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
+```
+
+---
+
+# 3. Write the Java Program
+
+The assignment says choose any one scenario. Here I am giving **Simple Calculator Application** because it is easy and correct for lab work. 
+
+## Step 4: Write `App.java`
+
+Path:
+`src/main/java/com/example/App.java`
+
+```java
+package com.example;
+
+public class App {
+
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public int subtract(int a, int b) {
+        return a - b;
+    }
+
+    public int multiply(int a, int b) {
+        return a * b;
+    }
+
+    public int divide(int a, int b) {
+        if (b == 0) {
+            throw new ArithmeticException("Cannot divide by zero");
+        }
+        return a / b;
+    }
+
+    public static void main(String[] args) {
+        App calculator = new App();
+
+        System.out.println("Addition: " + calculator.add(10, 5));
+        System.out.println("Subtraction: " + calculator.subtract(10, 5));
+        System.out.println("Multiplication: " + calculator.multiply(10, 5));
+        System.out.println("Division: " + calculator.divide(10, 5));
+    }
+}
+```
+
+---
+
+# 4. Write the Unit Test
+
+## Step 5: Write `AppTest.java`
+
+Path:
+`src/test/java/com/example/AppTest.java`
+
+```java
+package com.example;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class AppTest {
+
+    App calculator = new App();
+
+    @Test
+    public void testAdd() {
+        assertEquals(15, calculator.add(10, 5));
+    }
+
+    @Test
+    public void testSubtract() {
+        assertEquals(5, calculator.subtract(10, 5));
+    }
+
+    @Test
+    public void testMultiply() {
+        assertEquals(50, calculator.multiply(10, 5));
+    }
+
+    @Test
+    public void testDivide() {
+        assertEquals(2, calculator.divide(10, 5));
+    }
+
+    @Test(expected = ArithmeticException.class)
+    public void testDivideByZero() {
+        calculator.divide(10, 0);
+    }
+}
+```
+
+---
+
+# 5. Add Files to Git and Commit
+
+## Step 6: Check project structure
+
+Your project should look like this:
+
+```bash
+SimpleCalculatorApp
+│── pom.xml
+│── src
+│   ├── main
+│   │   └── java
+│   │       └── com
+│   │           └── example
+│   │               └── App.java
+│   └── test
+│       └── java
+│           └── com
+│               └── example
+│                   └── AppTest.java
+```
+
+## Step 7: Git add and commit
+
+Run:
+
+```bash
+git status
+git add .
+git commit -m "Created Maven project with calculator app and unit test"
+```
+
+---
+
+# 6. Create GitHub Repository and Push
+
+## Step 8: Create repository on GitHub
+
+Create a new GitHub repository named:
+`SimpleCalculatorApp`
+
+## Step 9: Connect local repo to GitHub
+
+Run:
+
+```bash
+git remote add origin https://github.com/yourusername/SimpleCalculatorApp.git
+git branch -M main
+git push -u origin main
+```
+
+Replace `yourusername` with your real GitHub username.
+
+---
+
+# 7. Clone the Repository in VS Code
+
+The assignment asks to clone and verify structure. 
+
+## Step 10: Clone repo
+
+Open terminal in another folder and run:
+
+```bash
+git clone https://github.com/yourusername/SimpleCalculatorApp.git
+cd SimpleCalculatorApp
+code .
+```
+
+## Step 11: Verify structure
+
+Check that these files are present:
+
+* `pom.xml`
+* `src/main/java/com/example/App.java`
+* `src/test/java/com/example/AppTest.java`
+
+---
+
+# 8. Build the Maven Project
+
+## Step 12: Compile the project
+
+Run:
+
+```bash
+mvn compile
+```
+
+### Expected result
+
+You should see:
+
+```bash
+BUILD SUCCESS
+```
+
+## Step 13: Run tests
+
+Run:
+
+```bash
+mvn test
+```
+
+### Expected result
+
+All test cases should pass, and you should see:
+
+```bash
+BUILD SUCCESS
+```
+
+## Step 14: Build complete project
+
+Run:
+
+```bash
+mvn clean install
+```
+
+### What it does
+
+* `clean` → removes old build files
+* `install` → compiles, tests, packages, and installs project
+
+### Expected result
+
+```bash
+BUILD SUCCESS
+```
+
+---
+
+# 9. Run the Java Program Output
+
+Since `mvn compile` only compiles, to see output you can run the class manually.
+
+## Step 15: Compile
+
+```bash
+mvn compile
+```
+
+## Step 16: Run main class
+
+If using Java 17 and compiled classes, run:
+
+```bash
+java -cp target/classes com.example.App
+```
+
+### Output
+
+```bash
+Addition: 15
+Subtraction: 5
+Multiplication: 50
+Division: 2
+```
+
+---
+
+# 10. Create Jenkins Pipeline
+
+The assignment asks to create a Pipeline project in Jenkins, write pipeline script, and execute it. 
+
+## Step 17: Open Jenkins
+
+Open Jenkins in browser.
+
+## Step 18: Create new Pipeline project
+
+* Click **New Item**
+* Enter name: `SimpleCalculatorPipeline`
+* Select **Pipeline**
+* Click **OK**
+
+## Step 19: Add pipeline script
+
+In Pipeline section, choose **Pipeline script** and paste:
+
+```groovy
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone') {
+            steps {
+                git branch: 'main', url: 'https://github.com/yourusername/SimpleCalculatorApp.git'
+            }
+        }
+
+        stage('Compile') {
+            steps {
+                bat 'mvn compile'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                bat 'mvn test'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                bat 'mvn clean install'
+            }
+        }
+    }
+}
+```
+
+### For Linux Jenkins
+
+Use this instead of `bat`:
+
+```groovy
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone') {
+            steps {
+                git branch: 'main', url: 'https://github.com/yourusername/SimpleCalculatorApp.git'
+            }
+        }
+
+        stage('Compile') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+    }
+}
+```
+
+Replace the GitHub URL with your repository URL.
+
+---
+
+# 11. Run Jenkins Pipeline
+
+## Step 20: Save and build
+
+* Click **Save**
+* Click **Build Now**
+
+## Step 21: Verify output
+
+Check:
+
+* **Build History**
+* **Console Output**
+* Pipeline stage progress
+
+### Expected stages
+
+* Clone
+* Compile
+* Test
+* Build
+
+### Expected final result
+
+```bash
+Finished: SUCCESS
+```
+
+---
+
+# 12. Full Command List in One Place
+
+Use these in order.
+
+## Create project
+
+```bash
+mkdir SimpleCalculatorApp
+cd SimpleCalculatorApp
+git init
+code .
+```
+
+## Create folders
+
+```bash
+mkdir -p src/main/java/com/example
+mkdir -p src/test/java/com/example
+```
+
+## Git commit
+
+```bash
+git status
+git add .
+git commit -m "Created Maven project with calculator app and unit test"
+```
+
+## Push to GitHub
+
+```bash
+git remote add origin https://github.com/yourusername/SimpleCalculatorApp.git
+git branch -M main
+git push -u origin main
+```
+
+## Clone
+
+```bash
+git clone https://github.com/yourusername/SimpleCalculatorApp.git
+cd SimpleCalculatorApp
+code .
+```
+
+## Maven build
+
+```bash
+mvn compile
+mvn test
+mvn clean install
+```
+
+## Run output
+
+```bash
+java -cp target/classes com.example.App
+```
+
+---
+
+# 13. What to Show in Assignment Record
+
+You can write these steps in your record:
+
+## Part 1
+
+Created Git repository and Maven project structure.
+
+## Part 2
+
+Implemented Java program in `App.java`.
+
+## Part 3
+
+Implemented unit testing in `AppTest.java`.
+
+## Part 4
+
+Pushed project to GitHub and cloned in VS Code.
+
+## Part 5
+
+Executed:
+
+```bash
+mvn compile
+mvn test
+mvn clean install
+```
+
+## Part 6
+
+Created Jenkins pipeline and executed successfully.
+
+## Output to show
+
+```bash
+Addition: 15
+Subtraction: 5
+Multiplication: 50
+Division: 2
+```
+
+## Final build result
+
+```bash
+BUILD SUCCESS
+```
+
+---
+
+# 14. Short Explanation of Each File
+
+## `pom.xml`
+
+Used to manage Maven project settings and dependencies.
+
+## `App.java`
+
+Main Java calculator program.
+
+## `AppTest.java`
+
+JUnit test file for checking the program.
+
+## Jenkins Pipeline
+
+Automates clone, compile, test, and build.
+
+---
+
+If you want, I can next give you this in **record-note format** with:
+**Aim, Procedure, Code, Output, Result**.
