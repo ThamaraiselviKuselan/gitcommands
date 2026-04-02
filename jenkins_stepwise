@@ -1,0 +1,150 @@
+For **the assignment you gave now**, this is what you need to do from the PDF — only the required steps, in order. 
+
+# Assignment Steps
+
+## 1) Understand Jenkins
+
+* Learn what **Jenkins** is
+* Learn what **CI/CD** means with a simple real-world example
+
+## 2) Install Jenkins
+
+* Install Jenkins on your system
+* Open the Jenkins dashboard in browser
+
+## 3) Explore Jenkins UI
+
+* Check the main Jenkins screen
+* Identify:
+
+  * Dashboard
+  * New Item
+  * Build History
+  * Console Output
+
+## 4) Create a Freestyle Job
+
+* Click **New Item**
+* Enter a job name
+* Select **Freestyle Project**
+* Create the job
+
+## 5) Add a Simple Build Step
+
+* In the job configuration, add a build step
+* On Windows use:
+
+```bash
+echo Hello Jenkins
+```
+
+## 6) Run the Job
+
+* Save the job
+* Click **Build Now**
+
+## 7) View Output
+
+* Open **Build History**
+* Open the latest build
+* Check **Console Output**
+
+## 8) Install Git
+
+* Install Git in your system
+
+## 9) Create GitHub Repository
+
+* Create one repository in GitHub
+
+## 10) Configure Git in Jenkins
+
+* Add Git path/settings in Jenkins
+
+## 11) Connect Jenkins with GitHub
+
+* In Jenkins job:
+
+  * Go to **Source Code Management**
+  * Choose **Git**
+  * Enter your GitHub repository URL
+
+## 12) Add Build Step with Git Project
+
+* Add a Windows batch command or shell command in the Jenkins job
+
+## 13) Trigger Automatic Build
+
+* Use:
+
+  * **Poll SCM** or
+  * **Webhook**
+* Build should run automatically when code changes
+
+## 14) Create Multiple Jobs
+
+Create 3 freestyle jobs:
+
+* **Job-A** → Build
+* **Job-B** → Test
+* **Job-C** → Deploy
+
+## 15) Link Jobs
+
+* Use **Post-build action**
+* Trigger the next project after one job finishes
+
+## 16) View Job Flow
+
+* Observe how jobs run one after another
+
+## 17) Install Pipeline Stage View
+
+* Install the plugin
+* View stage-wise execution
+
+## 18) Create a Pipeline Job
+
+* Create a new **Pipeline** job
+
+## 19) Write Basic Pipeline
+
+Use this:
+
+```groovy
+pipeline {
+ agent any
+ stages {
+  stage('Build') { steps { echo 'Build' } }
+  stage('Test') { steps { echo 'Test' } }
+  stage('Deploy') { steps { echo 'Deploy' } }
+ }
+}
+```
+
+## 20) Create Jenkinsfile
+
+* Create a file named **Jenkinsfile**
+* Put pipeline code inside it
+
+## 21) Push Jenkinsfile to GitHub
+
+* Commit and push the Jenkinsfile to your repository
+
+## 22) Configure Pipeline from SCM
+
+* In Jenkins Pipeline job:
+
+  * Choose **Pipeline script from SCM**
+  * Select **Git**
+  * Add repository URL
+
+## 23) Rebuild After Changes
+
+* Modify Jenkinsfile
+* Commit changes
+* Trigger build again
+* Check **Stage View**
+
+---
+
