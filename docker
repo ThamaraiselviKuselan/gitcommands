@@ -1,0 +1,596 @@
+Here are the **exact steps, commands, and code needed** for this assignment, in the same flow you should do it. This is based on your uploaded assignment file, which asks you to create `index.html`, `Dockerfile`, and `Deployment.yaml`, enable Kubernetes in Docker Desktop, configure Jenkins credentials, create a Pipeline job, and verify the page opens on `http://localhost:30010`. 
+
+# 1. Create the project folder and Git repository
+
+Open terminal and run:
+
+```bash
+mkdir html-demo
+cd html-demo
+git init
+code .
+```
+
+What this does:
+
+* `mkdir html-demo` → creates project folder
+* `cd html-demo` → enters the folder
+* `git init` → starts a Git repository
+* `code .` → opens the folder in VS Code
+
+---
+
+# 2. Create the required files
+
+Create these 3 files inside the project:
+
+* `index.html`
+* `Dockerfile`
+* `deployment.yaml`
+
+You can create them in VS Code, or in terminal:
+
+## On Windows CMD
+
+```bash
+type nul > index.html
+type nul > Dockerfile
+type nul > deployment.yaml
+```
+
+## On PowerShell
+
+```powershell
+New-Item index.html
+New-Item Dockerfile
+New-Item deployment.yaml
+```
+
+---
+
+# 3. Paste code into `index.html`
+
+File: `index.html`
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CI/CD Demo</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: "Times New Roman";
+            background-color: #af0d0d;
+        }
+        h1 {
+            color: #0ef777;
+        }
+    </style>
+</head>
+<body>
+    <h1>CI/CD Pipeline Working</h1>
+    <h2>Deployed using Jenkins + Docker + Kubernetes</h2>
+    <p>This webpage is automatically deployed using a CI/CD pipeline.</p>
+</body>
+</html>
+```
+
+---
+
+# 4. Paste code into `Dockerfile`
+
+File: `Dockerfile`
+
+```dockerfile
+FROM nginx:latest
+COPY index.html /usr/share/nginx/html/index.html
+EXPOSE 80
+```
+
+What this does:
+
+* uses Nginx image
+* copies your HTML page into Nginx default folder
+* exposes port 80 inside the container
+
+---
+
+# 5. Paste code into `deployment.yaml`
+
+File: `deployment.yaml`
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: html-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: html-demo
+  template:
+    metadata:
+      labels:
+        app: html-demo
+    spec:
+      containers:
+        - name: html-demo
+          image: yourdockerhubusername/html-demo:latest
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: html-demo-service
+spec:
+  type: NodePort
+  selector:
+    app: html-demo
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30010
+```
+
+Important:
+
+* Replace `yourdockerhubusername` with your real Docker Hub username.
+* The assignment PDF example shows an image name like `swetab84/html-demo:latest`; yours should use your own Docker Hub username. 
+
+---
+
+# 6. Save files and commit to Git
+
+Run these commands:
+
+```bash
+git status
+git add .
+git commit -m "Added index.html, Dockerfile and deployment.yaml"
+```
+
+---
+
+# 7. Create GitHub repository and push code
+
+Create a new repository on GitHub, then run:
+
+```bash
+git branch -M main
+git remote add origin https://github.com/yourusername/html-demo.git
+git push -u origin main
+```
+
+Replace:
+
+* `yourusername` with your GitHub username
+
+---
+
+# 8. Enable Kubernetes in Docker Desktop
+
+Do this in Docker Desktop:
+
+1. Open **Docker Desktop**
+2. Open **Settings**
+3. Go to **Kubernetes**
+4. Check **Enable Kubernetes**
+5. Click **Apply & Restart**
+
+The assignment says Docker Desktop will start a single-node cluster and this may take a few minutes the first time. 
+
+---
+
+# 9. Test Docker locally first
+
+Before Jenkins, build and test once manually.
+
+## Build Docker image
+
+```bash
+docker build -t yourdockerhubusername/html-demo .
+```
+
+## Run Docker container
+
+```bash
+docker run -d -p 8080:80 yourdockerhubusername/html-demo
+```
+
+Now open:
+
+```text
+http://localhost:8080
+```
+
+You should see:
+
+* `CI/CD Pipeline Working`
+* `Deployed using Jenkins + Docker + Kubernetes`
+
+## Stop the test container later
+
+First check container:
+
+```bash
+docker ps
+```
+
+Then stop it:
+
+```bash
+docker stop <container_id>
+```
+
+---
+
+# 10. Login to Docker Hub and push image manually once
+
+```bash
+docker login
+```
+
+Enter:
+
+* Docker Hub username
+* Docker Hub password
+
+Then push image:
+
+```bash
+docker push yourdockerhubusername/html-demo
+```
+
+---
+
+# 11. Test Kubernetes manually once
+
+Apply the YAML file:
+
+```bash
+kubectl apply -f deployment.yaml
+```
+
+Check pods:
+
+```bash
+kubectl get pods
+```
+
+Check services:
+
+```bash
+kubectl get services
+```
+
+Now open:
+
+```text
+http://localhost:30010
+```
+
+The assignment says the HTML page should open on the NodePort mentioned in `deployment.yaml`, which is `30010`. 
+
+---
+
+# 12. Add Jenkins credentials
+
+Go to:
+
+```text
+Jenkins → Manage Jenkins → Credentials
+```
+
+Add these two credentials as shown in the assignment. 
+
+## Credential 1: Docker Hub username/password
+
+* Kind: `Username with password`
+* Username: your Docker Desktop / Docker Hub username
+* Password: your Docker Hub password
+* ID: `dockerhub`
+* Description: anything
+
+## Credential 2: Kubernetes config file
+
+* Kind: `Secret file`
+* Upload kube config file from:
+
+On Windows usually:
+
+```text
+C:\Users\Administrator\.kube\config
+```
+
+Or on your system:
+
+```text
+C:\Users\<your-username>\.kube\config
+```
+
+* ID: `kuberconfig`
+
+Important:
+
+* `dockerhub` ID must match the pipeline script
+* `kuberconfig` ID must match the pipeline script
+
+---
+
+# 13. Create Jenkins Pipeline job
+
+In Jenkins:
+
+1. Click **New Item**
+2. Enter name: `html-demo-pipeline`
+3. Select **Pipeline**
+4. Click **OK**
+
+---
+
+# 14. Paste the pipeline script
+
+For **Windows Jenkins**, use this script in Pipeline section:
+
+```groovy
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = "yourdockerhubusername/html-demo:latest"
+    }
+
+    stages {
+        stage('Clone Code') {
+            steps {
+                git branch: 'main',
+                url: 'https://github.com/yourusername/html-demo.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                bat 'docker build -t %DOCKER_IMAGE% .'
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                    bat 'docker login -u %USER% -p %PASS%'
+                    bat 'docker push %DOCKER_IMAGE%'
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                withCredentials([file(credentialsId: 'kuberconfig', variable: 'KUBECONFIG')]) {
+                    bat '''
+                    set KUBECONFIG=%KUBECONFIG%
+                    kubectl apply -f deployment.yaml --validate=false
+                    '''
+                }
+            }
+        }
+    }
+}
+```
+
+Replace:
+
+* `yourdockerhubusername` with your Docker Hub username
+* `yourusername` with your GitHub username
+
+This matches the assignment flow on pages 4–5: clone code, build Docker image, push image, then deploy to Kubernetes using the kubeconfig credential. 
+
+---
+
+# 15. Run the Jenkins build
+
+In Jenkins:
+
+* Click **Save**
+* Click **Build Now**
+
+Then open:
+
+* **Build History**
+* **Console Output**
+
+You should see stages running:
+
+* Clone Code
+* Build Docker Image
+* Push Image
+* Deploy to Kubernetes
+
+---
+
+# 16. Verify output
+
+After Jenkins build succeeds, check:
+
+## In Docker Desktop
+
+You should see the image/container reflected there, as shown in the assignment screenshots. 
+
+## In Kubernetes
+
+Run:
+
+```bash
+kubectl get pods
+kubectl get services
+kubectl get deployments
+```
+
+Expected:
+
+* 2 pods because `replicas: 2`
+* service with NodePort `30010`
+
+## In browser
+
+Open:
+
+```text
+http://localhost:30010
+```
+
+You should see your HTML page.
+
+---
+
+# 17. Final command list only
+
+Use these in order:
+
+```bash
+mkdir html-demo
+cd html-demo
+git init
+code .
+
+git add .
+git commit -m "Added project files"
+
+git branch -M main
+git remote add origin https://github.com/yourusername/html-demo.git
+git push -u origin main
+
+docker build -t yourdockerhubusername/html-demo .
+docker run -d -p 8080:80 yourdockerhubusername/html-demo
+docker login
+docker push yourdockerhubusername/html-demo
+
+kubectl apply -f deployment.yaml
+kubectl get pods
+kubectl get services
+kubectl get deployments
+```
+
+---
+
+# 18. Final files you need
+
+## `index.html`
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CI/CD Demo</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: "Times New Roman";
+            background-color: #af0d0d;
+        }
+        h1 {
+            color: #0ef777;
+        }
+    </style>
+</head>
+<body>
+    <h1>CI/CD Pipeline Working</h1>
+    <h2>Deployed using Jenkins + Docker + Kubernetes</h2>
+    <p>This webpage is automatically deployed using a CI/CD pipeline.</p>
+</body>
+</html>
+```
+
+## `Dockerfile`
+
+```dockerfile
+FROM nginx:latest
+COPY index.html /usr/share/nginx/html/index.html
+EXPOSE 80
+```
+
+## `deployment.yaml`
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: html-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: html-demo
+  template:
+    metadata:
+      labels:
+        app: html-demo
+    spec:
+      containers:
+        - name: html-demo
+          image: yourdockerhubusername/html-demo:latest
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: html-demo-service
+spec:
+  type: NodePort
+  selector:
+    app: html-demo
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30010
+```
+
+## Jenkins pipeline
+
+```groovy
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = "yourdockerhubusername/html-demo:latest"
+    }
+
+    stages {
+        stage('Clone Code') {
+            steps {
+                git branch: 'main',
+                url: 'https://github.com/yourusername/html-demo.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                bat 'docker build -t %DOCKER_IMAGE% .'
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                    bat 'docker login -u %USER% -p %PASS%'
+                    bat 'docker push %DOCKER_IMAGE%'
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                withCredentials([file(credentialsId: 'kuberconfig', variable: 'KUBECONFIG')]) {
+                    bat '''
+                    set KUBECONFIG=%KUBECONFIG%
+                    kubectl apply -f deployment.yaml --validate=false
+                    '''
+                }
+            }
+        }
+    }
+}
+```
