@@ -1,0 +1,165 @@
+# -------------------------------
+# 1. SETUP PROJECT
+# -------------------------------
+
+mkdir LibraryManagementSystem        → create project folder
+cd LibraryManagementSystem           → enter folder
+code .                               → open in VS Code
+
+git init                             → initialize git repo
+git status                           → check repo status
+
+# create file manually: library.py
+
+git add library.py                   → stage file
+git commit -m "Initial commit"       → save first version
+git log                              → view full history
+
+
+# -------------------------------
+# 2. DAILY WORK (EDIT + SAVE)
+# -------------------------------
+
+# modify library.py
+
+git diff                             → see changes made
+git status                           → check modified files
+git add library.py                   → stage updated file
+git commit -m "Updated file"         → save changes
+git log --oneline                    → short commit history
+
+
+# -------------------------------
+# 3. CREATE & WORK ON BRANCH
+# -------------------------------
+
+git branch login-feature             → create new branch
+git checkout login-feature           → switch to branch
+# OR: git checkout -b login-feature  → create + switch
+
+# create file: login.py
+
+git add login.py                     → stage new file
+git commit -m "Added login feature"  → commit feature
+
+git checkout main                    → go back to main
+git branch                           → list branches
+
+
+# -------------------------------
+# 4. MERGE FEATURE INTO MAIN
+# -------------------------------
+
+git merge login-feature              → merge feature branch
+git log --oneline                    → check history
+
+git branch -d login-feature          → delete merged branch
+
+
+# -------------------------------
+# 5. CONNECT TO GITHUB
+# -------------------------------
+
+git remote add origin URL            → connect to remote repo
+git remote -v                        → verify remote
+
+git push -u origin main              → push first time
+
+
+# -------------------------------
+# 6. UNDO WRONG CHANGES
+# -------------------------------
+
+# modify library.py incorrectly
+
+git diff                             → see wrong changes
+git restore library.py               → discard changes
+# OR: git checkout -- library.py
+
+git status                           → confirm clean
+
+
+# -------------------------------
+# 7. MERGE CONFLICT HANDLING
+# -------------------------------
+
+git checkout -b branch1              → create branch1
+# edit library.py
+git add library.py
+git commit -m "Branch1 changes"
+
+git checkout main
+git checkout -b branch2              → create branch2
+# edit same line differently
+git add library.py
+git commit -m "Branch2 changes"
+
+git checkout main
+git merge branch1                    → merge branch1
+git merge branch2                    → conflict happens
+
+# fix conflict manually in editor
+
+git add library.py                   → stage resolved file
+git commit -m "Resolved conflict"    → finalize merge
+
+
+# -------------------------------
+# 8. IGNORE FILES
+# -------------------------------
+
+# create .gitignore file
+
+git add .gitignore                   → stage ignore rules
+git commit -m "Added gitignore"      → commit
+
+
+# -------------------------------
+# 9. COLLABORATION
+# -------------------------------
+
+git fetch                            → get updates (no merge)
+git pull                             → fetch + merge changes
+
+
+# -------------------------------
+# 10. FINAL RELEASE
+# -------------------------------
+
+git log --oneline                    → review commits
+
+git add .                            → stage all changes
+git commit -m "Final update"         → final commit
+
+git push                             → push to GitHub
+
+git tag -a v1.0 -m "Release v1.0"    → create version tag
+git push origin v1.0                 → push tag
+
+git tag                              → list all tags
+
+
+# -------------------------------
+# 11. EXTRA IMPORTANT COMMANDS
+# -------------------------------
+
+git clone URL                        → download repo
+
+git reset file                       → unstage file
+
+git rm file                          → delete file from repo
+
+git mv old new                       → rename/move file
+
+git show SHA                         → view commit details
+
+git log --follow file                → track file history
+
+git rebase branch                    → reapply commits on another base
+
+git reset --hard commit              → reset project to commit (danger!)
+
+git stash                            → save changes temporarily
+git stash list                       → list saved changes
+git stash pop                        → restore saved changes
+git stash drop                       → delete stash
