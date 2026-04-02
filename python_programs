@@ -1,0 +1,433 @@
+Below is the **correct, full Python code** for all 5 assignment questions, with **how to save, run, enter input, and expected output steps**. Based on your assignment PDF. 
+
+---
+
+# Question 1: Password Validation
+
+## Code
+
+```python
+# Question 1: Password Validation
+
+passwords = input("Enter comma separated passwords: ").split(",")
+
+valid_passwords = []
+
+for p in passwords:
+    p = p.strip()
+
+    has_lower = False
+    has_upper = False
+    has_digit = False
+    has_special = False
+
+    for ch in p:
+        if ch.islower():
+            has_lower = True
+        elif ch.isupper():
+            has_upper = True
+        elif ch.isdigit():
+            has_digit = True
+        elif ch in "$#@":
+            has_special = True
+
+    if 6 <= len(p) <= 12 and has_lower and has_upper and has_digit and has_special:
+        valid_passwords.append(p)
+
+print("Valid passwords:", ",".join(valid_passwords))
+```
+
+## How to do it
+
+1. Open **VS Code**
+2. Create file `q1.py`
+3. Paste the code
+4. Save the file
+5. Open terminal
+6. Run:
+
+```bash
+python q1.py
+```
+
+## Sample input
+
+```python
+ABd1234@1,a F1#,2w3E*,2We3345
+```
+
+## Output
+
+```python
+Valid passwords: ABd1234@1
+```
+
+---
+
+# Question 2: Sort Tuples by Name, Age, Height
+
+## Code
+
+```python
+# Question 2: Sort (name, age, height)
+
+records = []
+
+n = int(input("Enter number of records: "))
+
+for i in range(n):
+    print(f"Enter details for record {i+1}:")
+    name = input("Name: ")
+    age = input("Age: ")
+    height = input("Height: ")
+    records.append((name, age, height))
+
+records.sort(key=lambda x: (x[0], x[1], x[2]))
+
+print("Sorted list:")
+print(records)
+```
+
+## How to do it
+
+1. Create file `q2.py`
+2. Paste code
+3. Save
+4. Run:
+
+```bash
+python q2.py
+```
+
+## Sample input
+
+```python
+Enter number of records: 5
+Enter details for record 1:
+Name: Tom
+Age: 19
+Height: 80
+Enter details for record 2:
+Name: John
+Age: 20
+Height: 90
+Enter details for record 3:
+Name: Jony
+Age: 17
+Height: 91
+Enter details for record 4:
+Name: Jony
+Age: 17
+Height: 93
+Enter details for record 5:
+Name: Json
+Age: 21
+Height: 85
+```
+
+## Output
+
+```python
+Sorted list:
+[('John', '20', '90'), ('Jony', '17', '91'), ('Jony', '17', '93'), ('Json', '21', '85'), ('Tom', '19', '80')]
+```
+
+---
+
+# Question 3: Electricity Bill Calculation
+
+## Code
+
+```python
+# Question 3: Electricity Bill
+
+units = int(input("Enter number of units consumed: "))
+
+if units <= 100:
+    bill = units * 2
+elif units <= 200:
+    bill = (100 * 2) + ((units - 100) * 3)
+else:
+    bill = (100 * 2) + (100 * 3) + ((units - 200) * 5)
+
+print("Total electricity bill = ₹", bill)
+```
+
+## How to do it
+
+1. Create file `q3.py`
+2. Paste code
+3. Save
+4. Run:
+
+```bash
+python q3.py
+```
+
+## Sample input 1
+
+```python
+Enter number of units consumed: 80
+```
+
+## Output 1
+
+```python
+Total electricity bill = ₹ 160
+```
+
+## Sample input 2
+
+```python
+Enter number of units consumed: 150
+```
+
+## Output 2
+
+```python
+Total electricity bill = ₹ 350
+```
+
+## Sample input 3
+
+```python
+Enter number of units consumed: 250
+```
+
+## Output 3
+
+```python
+Total electricity bill = ₹ 750
+```
+
+### Calculation for 250 units
+
+* First 100 units = 100 × 2 = 200
+* Next 100 units = 100 × 3 = 300
+* Remaining 50 units = 50 × 5 = 250
+* Total = 200 + 300 + 250 = 750
+
+---
+
+# Question 4: ATM Withdrawal
+
+## Code
+
+```python
+# Question 4: ATM Withdrawal
+
+balance = 10000
+
+print("Available balance =", balance)
+
+amount = int(input("Enter withdrawal amount: "))
+
+if amount % 100 != 0:
+    print("Withdrawal amount must be a multiple of 100.")
+elif amount > balance:
+    print("Insufficient balance.")
+else:
+    balance = balance - amount
+    print("Withdrawal successful.")
+    print("Updated balance =", balance)
+```
+
+## How to do it
+
+1. Create file `q4.py`
+2. Paste code
+3. Save
+4. Run:
+
+```bash
+python q4.py
+```
+
+## Sample input 1
+
+```python
+Available balance = 10000
+Enter withdrawal amount: 2500
+```
+
+## Output 1
+
+```python
+Withdrawal successful.
+Updated balance = 7500
+```
+
+## Sample input 2
+
+```python
+Available balance = 10000
+Enter withdrawal amount: 2550
+```
+
+## Output 2
+
+```python
+Withdrawal amount must be a multiple of 100.
+```
+
+## Sample input 3
+
+```python
+Available balance = 10000
+Enter withdrawal amount: 15000
+```
+
+## Output 3
+
+```python
+Insufficient balance.
+```
+
+---
+
+# Question 5: Salary Calculation
+
+## Code
+
+```python
+# Question 5: Salary Calculation
+
+basic_salary = float(input("Enter basic salary: "))
+
+hra = 0.20 * basic_salary
+da = 0.10 * basic_salary
+gross_salary = basic_salary + hra + da
+tax = 0.05 * gross_salary
+net_salary = gross_salary - tax
+
+print("Basic Salary =", basic_salary)
+print("HRA =", hra)
+print("DA =", da)
+print("Gross Salary =", gross_salary)
+print("Tax =", tax)
+print("Net Salary =", net_salary)
+```
+
+## How to do it
+
+1. Create file `q5.py`
+2. Paste code
+3. Save
+4. Run:
+
+```bash
+python q5.py
+```
+
+## Sample input
+
+```python
+Enter basic salary: 20000
+```
+
+## Output
+
+```python
+Basic Salary = 20000.0
+HRA = 4000.0
+DA = 2000.0
+Gross Salary = 26000.0
+Tax = 1300.0
+Net Salary = 24700.0
+```
+
+### Calculation
+
+* HRA = 20% of 20000 = 4000
+* DA = 10% of 20000 = 2000
+* Gross Salary = 20000 + 4000 + 2000 = 26000
+* Tax = 5% of 26000 = 1300
+* Net Salary = 26000 - 1300 = 24700
+
+---
+
+# Full Running Steps for All Programs
+
+## Step 1
+
+Open **VS Code**
+
+## Step 2
+
+Create 5 files:
+
+* `q1.py`
+* `q2.py`
+* `q3.py`
+* `q4.py`
+* `q5.py`
+
+## Step 3
+
+Paste each code in the correct file
+
+## Step 4
+
+Save all files
+
+## Step 5
+
+Open terminal in VS Code
+
+## Step 6
+
+Run one by one:
+
+```bash
+python q1.py
+python q2.py
+python q3.py
+python q4.py
+python q5.py
+```
+
+---
+
+# Very Easy Submission Format
+
+For each question, write in this order:
+
+## Question number
+
+## Program
+
+## Input
+
+## Output
+
+## Result
+
+Example:
+
+### Question 3: Electricity Bill
+
+**Program:**
+(paste code)
+
+**Input:**
+250
+
+**Output:**
+Total electricity bill = ₹ 750
+
+**Result:**
+Thus, the electricity bill was calculated successfully.
+
+---
+
+# Important Correction for Question 2
+
+Your assignment text says “name, age, height” but later says “sort by score.” The sample output clearly uses the **third value in the tuple**, so the correct practical approach is to sort by:
+
+* name
+* age
+* third value
+
+That is why this code matches the sample output in your PDF. 
+
+If you want, I can next give you a **single combined file with all 5 questions in one program**.
