@@ -1,0 +1,530 @@
+Below is **code for all 5 scenarios** from your assignment, each with:
+
+* `App.java`
+* `AppTest.java`
+
+Your assignment says **choose any one**, but since you asked for **everything**, I’m giving all options. Use **only one pair at a time** in your Maven project. 
+
+---
+
+# 1) Simple Calculator Application
+
+## App.java
+
+```java
+package com.example;
+
+public class App {
+
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public int subtract(int a, int b) {
+        return a - b;
+    }
+
+    public int multiply(int a, int b) {
+        return a * b;
+    }
+
+    public int divide(int a, int b) {
+        if (b == 0) {
+            throw new ArithmeticException("Cannot divide by zero");
+        }
+        return a / b;
+    }
+
+    public static void main(String[] args) {
+        App calc = new App();
+
+        System.out.println("Addition: " + calc.add(10, 5));
+        System.out.println("Subtraction: " + calc.subtract(10, 5));
+        System.out.println("Multiplication: " + calc.multiply(10, 5));
+        System.out.println("Division: " + calc.divide(10, 5));
+    }
+}
+```
+
+## AppTest.java
+
+```java
+package com.example;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class AppTest {
+
+    App calc = new App();
+
+    @Test
+    public void testAdd() {
+        assertEquals(15, calc.add(10, 5));
+    }
+
+    @Test
+    public void testSubtract() {
+        assertEquals(5, calc.subtract(10, 5));
+    }
+
+    @Test
+    public void testMultiply() {
+        assertEquals(50, calc.multiply(10, 5));
+    }
+
+    @Test
+    public void testDivide() {
+        assertEquals(2, calc.divide(10, 5));
+    }
+
+    @Test(expected = ArithmeticException.class)
+    public void testDivideByZero() {
+        calc.divide(10, 0);
+    }
+}
+```
+
+## Output
+
+```text
+Addition: 15
+Subtraction: 5
+Multiplication: 50
+Division: 2
+```
+
+---
+
+# 2) Student Grade Calculator
+
+## App.java
+
+```java
+package com.example;
+
+public class App {
+
+    public double calculateAverage(int m1, int m2, int m3) {
+        return (m1 + m2 + m3) / 3.0;
+    }
+
+    public String calculateGrade(double average) {
+        if (average >= 90) {
+            return "A";
+        } else if (average >= 75) {
+            return "B";
+        } else if (average >= 60) {
+            return "C";
+        } else if (average >= 40) {
+            return "D";
+        } else {
+            return "F";
+        }
+    }
+
+    public static void main(String[] args) {
+        App student = new App();
+
+        int mark1 = 85;
+        int mark2 = 90;
+        int mark3 = 80;
+
+        double average = student.calculateAverage(mark1, mark2, mark3);
+        String grade = student.calculateGrade(average);
+
+        System.out.println("Mark 1: " + mark1);
+        System.out.println("Mark 2: " + mark2);
+        System.out.println("Mark 3: " + mark3);
+        System.out.println("Average: " + average);
+        System.out.println("Grade: " + grade);
+    }
+}
+```
+
+## AppTest.java
+
+```java
+package com.example;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class AppTest {
+
+    App student = new App();
+
+    @Test
+    public void testCalculateAverage() {
+        assertEquals(85.0, student.calculateAverage(85, 90, 80), 0.01);
+    }
+
+    @Test
+    public void testGradeA() {
+        assertEquals("A", student.calculateGrade(95));
+    }
+
+    @Test
+    public void testGradeB() {
+        assertEquals("B", student.calculateGrade(80));
+    }
+
+    @Test
+    public void testGradeC() {
+        assertEquals("C", student.calculateGrade(65));
+    }
+
+    @Test
+    public void testGradeD() {
+        assertEquals("D", student.calculateGrade(45));
+    }
+
+    @Test
+    public void testGradeF() {
+        assertEquals("F", student.calculateGrade(30));
+    }
+}
+```
+
+## Output
+
+```text
+Mark 1: 85
+Mark 2: 90
+Mark 3: 80
+Average: 85.0
+Grade: B
+```
+
+---
+
+# 3) Employee Salary Calculator
+
+## App.java
+
+```java
+package com.example;
+
+public class App {
+
+    public double calculateHRA(double basic) {
+        return basic * 0.20;
+    }
+
+    public double calculateDA(double basic) {
+        return basic * 0.10;
+    }
+
+    public double calculateGrossSalary(double basic) {
+        return basic + calculateHRA(basic) + calculateDA(basic);
+    }
+
+    public double calculateTax(double grossSalary) {
+        return grossSalary * 0.05;
+    }
+
+    public double calculateNetSalary(double basic) {
+        double gross = calculateGrossSalary(basic);
+        double tax = calculateTax(gross);
+        return gross - tax;
+    }
+
+    public static void main(String[] args) {
+        App employee = new App();
+
+        double basic = 20000;
+        double hra = employee.calculateHRA(basic);
+        double da = employee.calculateDA(basic);
+        double gross = employee.calculateGrossSalary(basic);
+        double tax = employee.calculateTax(gross);
+        double net = employee.calculateNetSalary(basic);
+
+        System.out.println("Basic Salary: " + basic);
+        System.out.println("HRA: " + hra);
+        System.out.println("DA: " + da);
+        System.out.println("Gross Salary: " + gross);
+        System.out.println("Tax: " + tax);
+        System.out.println("Net Salary: " + net);
+    }
+}
+```
+
+## AppTest.java
+
+```java
+package com.example;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class AppTest {
+
+    App employee = new App();
+
+    @Test
+    public void testHRA() {
+        assertEquals(4000.0, employee.calculateHRA(20000), 0.01);
+    }
+
+    @Test
+    public void testDA() {
+        assertEquals(2000.0, employee.calculateDA(20000), 0.01);
+    }
+
+    @Test
+    public void testGrossSalary() {
+        assertEquals(26000.0, employee.calculateGrossSalary(20000), 0.01);
+    }
+
+    @Test
+    public void testTax() {
+        assertEquals(1300.0, employee.calculateTax(26000), 0.01);
+    }
+
+    @Test
+    public void testNetSalary() {
+        assertEquals(24700.0, employee.calculateNetSalary(20000), 0.01);
+    }
+}
+```
+
+## Output
+
+```text
+Basic Salary: 20000.0
+HRA: 4000.0
+DA: 2000.0
+Gross Salary: 26000.0
+Tax: 1300.0
+Net Salary: 24700.0
+```
+
+---
+
+# 4) Bank Account Management System
+
+## App.java
+
+```java
+package com.example;
+
+public class App {
+
+    private double balance = 10000;
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+        }
+    }
+
+    public boolean withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+            return true;
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        App account = new App();
+
+        System.out.println("Initial Balance: " + account.getBalance());
+
+        account.deposit(2000);
+        System.out.println("After Deposit: " + account.getBalance());
+
+        boolean success = account.withdraw(3000);
+        System.out.println("Withdraw Successful: " + success);
+        System.out.println("Final Balance: " + account.getBalance());
+    }
+}
+```
+
+## AppTest.java
+
+```java
+package com.example;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class AppTest {
+
+    @Test
+    public void testDeposit() {
+        App account = new App();
+        account.deposit(2000);
+        assertEquals(12000.0, account.getBalance(), 0.01);
+    }
+
+    @Test
+    public void testWithdrawSuccess() {
+        App account = new App();
+        boolean result = account.withdraw(3000);
+        assertTrue(result);
+        assertEquals(7000.0, account.getBalance(), 0.01);
+    }
+
+    @Test
+    public void testWithdrawFail() {
+        App account = new App();
+        boolean result = account.withdraw(15000);
+        assertFalse(result);
+        assertEquals(10000.0, account.getBalance(), 0.01);
+    }
+}
+```
+
+## Output
+
+```text
+Initial Balance: 10000.0
+After Deposit: 12000.0
+Withdraw Successful: true
+Final Balance: 9000.0
+```
+
+---
+
+# 5) Library Book Management System
+
+## App.java
+
+```java
+package com.example;
+
+public class App {
+
+    private int totalBooks = 10;
+
+    public int getTotalBooks() {
+        return totalBooks;
+    }
+
+    public boolean issueBook() {
+        if (totalBooks > 0) {
+            totalBooks--;
+            return true;
+        }
+        return false;
+    }
+
+    public void returnBook() {
+        totalBooks++;
+    }
+
+    public static void main(String[] args) {
+        App library = new App();
+
+        System.out.println("Initial Books: " + library.getTotalBooks());
+
+        boolean issued = library.issueBook();
+        System.out.println("Book Issued: " + issued);
+        System.out.println("Books After Issue: " + library.getTotalBooks());
+
+        library.returnBook();
+        System.out.println("Books After Return: " + library.getTotalBooks());
+    }
+}
+```
+
+## AppTest.java
+
+```java
+package com.example;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class AppTest {
+
+    @Test
+    public void testIssueBook() {
+        App library = new App();
+        boolean result = library.issueBook();
+        assertTrue(result);
+        assertEquals(9, library.getTotalBooks());
+    }
+
+    @Test
+    public void testReturnBook() {
+        App library = new App();
+        library.returnBook();
+        assertEquals(11, library.getTotalBooks());
+    }
+
+    @Test
+    public void testIssueBookUntilEmpty() {
+        App library = new App();
+
+        for (int i = 0; i < 10; i++) {
+            library.issueBook();
+        }
+
+        assertEquals(0, library.getTotalBooks());
+        assertFalse(library.issueBook());
+    }
+}
+```
+
+## Output
+
+```text
+Initial Books: 10
+Book Issued: true
+Books After Issue: 9
+Books After Return: 10
+```
+
+---
+
+# How to use these
+
+Put files in:
+
+## Main Java file
+
+```text
+src/main/java/com/example/App.java
+```
+
+## Test file
+
+```text
+src/test/java/com/example/AppTest.java
+```
+
+---
+
+# How to run
+
+## Compile
+
+```bash
+mvn compile
+```
+
+## Run tests
+
+```bash
+mvn test
+```
+
+## Build project
+
+```bash
+mvn clean install
+```
+
+## Run output
+
+```bash
+java -cp target/classes com.example.App
+```
+
+---
