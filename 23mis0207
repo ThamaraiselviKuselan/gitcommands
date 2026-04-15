@@ -1,0 +1,1257 @@
+1.	Bfs
+from collections import deque
+
+def bfs(graph, start):
+    visited = set()
+    queue = deque([start])
+    visited.add(start)
+
+    print("\n--- BFS Step-by-Step ---")
+    step = 1
+
+    while queue:
+        print(f"\nStep {step}:")
+        print("Queue:", list(queue))
+        print("Visited:", visited)
+
+        node = queue.popleft()
+        print("Processing node:", node)
+
+        for neighbour in graph[node]:
+            if neighbour not in visited:
+                print(f"  Visiting {neighbour} (added to queue)")
+                visited.add(neighbour)
+                queue.append(neighbour)
+
+        step += 1
+
+    print("\nFinal BFS Traversal:", visited)
+
+# Dynamic Input
+v = int(input("Enter number of vertices: "))
+e = int(input("Enter number of edges: "))
+
+graph = {}
+
+print("Enter vertex names:")
+for _ in range(v):
+    vertex = input()
+    graph[vertex] = []
+
+print("Enter edges (vertex1 vertex2):")
+for _ in range(e):
+    u, v1 = input().split()
+    graph[u].append(v1)
+    graph[v1].append(u)
+
+start = input("Enter starting node: ")
+bfs(graph, start)
+
+
+
+
+
+2.	Dfs
+def dfs(graph, start, visited=None, step=1):
+    if visited is None:
+        visited = set()
+
+    print(f"\nStep {step}:")
+    print("Visiting:", start)
+    print("Visited so far:", visited)
+
+    visited.add(start)
+
+    for neighbour in graph[start]:
+        if neighbour not in visited:
+            print(f"Going deeper from {start} -> {neighbour}")
+            step = dfs(graph, neighbour, visited, step + 1)
+
+    return step
+
+# Dynamic Input
+v = int(input("Enter number of vertices: "))
+e = int(input("Enter number of edges: "))
+
+graph = {}
+
+print("Enter vertex names:")
+for _ in range(v):
+    vertex = input()
+    graph[vertex] = []
+
+print("Enter edges (vertex1 vertex2):")
+for _ in range(e):
+    u, v1 = input().split()
+    graph[u].append(v1)
+    graph[v1].append(u)
+
+start = input("Enter starting node: ")
+print("\n--- DFS Step-by-Step ---")
+dfs(graph, start)
+
+
+
+
+3.	Ucs
+import heapq
+
+def ucs_with_path(graph, start, goal):
+    pq = [(0, start, [start])]
+    visited = set()
+    step = 1
+
+    print("\n--- UCS Step-by-Step ---")
+
+    while pq:
+        print(f"\nStep {step}:")
+        print("Priority Queue:", pq)
+
+        cost, node, path = heapq.heappop(pq)
+        print(f"Selected Node: {node} with cost {cost}")
+        print("Path so far:", " -> ".join(path))
+
+        if node == goal:
+            print("\n✅ Goal Reached!")
+            print("Final Path:", " -> ".join(path))
+            print("Minimum Cost:", cost)
+            return
+
+        if node not in visited:
+            visited.add(node)
+            print("Visited:", visited)
+
+            for neighbour, weight in graph[node]:
+                if neighbour not in visited:
+                    new_cost = cost + weight
+                    print(f"  Adding {neighbour} with cost {new_cost}")
+                    heapq.heappush(
+                        pq,
+                        (new_cost, neighbour, path + [neighbour])
+                    )
+
+        step += 1
+
+    print("No path found")
+
+# Dynamic Input same as above
+v = int(input("Enter number of vertices: "))
+e = int(input("Enter number of edges: "))
+
+graph = {}
+
+print("Enter vertex names:")
+for _ in range(v):
+    vertex = input()
+    graph[vertex] = []
+
+print("Enter edges (u v weight):")
+for _ in range(e):
+    u, v1, w = input().split()
+    w = int(w)
+    graph[u].append((v1, w))
+    graph[v1].append((u, w))
+
+start = input("Enter start node: ")
+goal = input("Enter goal node: ")
+
+ucs_with_path(graph, start, goal)
+
+4.	Greedy bfs
+import heapq
+
+def greedy_bfs(graph, heuristic, start, goal):
+    pq = [(heuristic[start], start)]
+    visited = set()
+    step = 1
+
+    print("\n--- Greedy BFS Step-by-Step ---")
+
+    while pq:
+        print(f"\nStep {step}:")
+        print("Priority Queue:", pq)
+
+        h, node = heapq.heappop(pq)
+
+        if node in visited:
+            continue
+
+        print(f"Selected Node: {node} with h(n) = {h}")
+        visited.add(node)
+        print("Visited:", visited)
+
+        if node == goal:
+            print("\n✅ Goal Reached!")
+            return
+
+        for neighbour in graph[node]:
+            if neighbour not in visited:
+                print(f"  Adding {neighbour} with h(n) = {heuristic[neighbour]}")
+                heapq.heappush(pq, (heuristic[neighbour], neighbour))
+
+        step += 1
+
+    print("No path found")
+
+# Same input as above
+v = int(input("Enter number of vertices: "))
+e = int(input("Enter number of edges: "))
+
+graph = {}
+
+print("Enter vertex names:")
+for _ in range(v):
+    vertex = input()
+    graph[vertex] = []
+
+print("Enter edges (u v):")
+for _ in range(e):
+    u, v1 = input().split()
+    graph[u].append(v1)
+    graph[v1].append(u)
+
+heuristic = {}
+print("Enter heuristic values:")
+for _ in range(v):
+    node = input("Node name: ")
+    heuristic[node] = int(input(f"h({node}) = "))
+
+start = input("Enter start node: ")
+goal = input("Enter goal node: ")
+
+greedy_bfs(graph, heuristic, start, goal)
+
+
+5.	A star
+import heapq
+
+def a_star_with_path(graph, heuristic, start, goal):
+    # Priority queue stores (f, g, node, path)
+    pq = [(heuristic[start], 0, start, [start])]
+    visited = set()
+    step = 1
+
+    print("\n--- A* Step-by-Step ---")
+
+    while pq:
+        print(f"\nStep {step}:")
+        print("Priority Queue:", pq)
+
+        f, g, node, path = heapq.heappop(pq)
+
+        print(f"Selected Node: {node}")
+        print(f"g({node}) = {g}")
+        print(f"h({node}) = {heuristic[node]}")
+        print(f"f({node}) = {f}")
+        print("Path so far:", " -> ".join(path))
+
+        if node == goal:
+            print("\nGoal Reached!")
+            print("Final Path:", " -> ".join(path))
+            print("Minimum Cost:", g)
+            return
+
+        if node not in visited:
+            visited.add(node)
+            print("Visited:", visited)
+
+            for neighbour, weight in graph[node]:
+                if neighbour not in visited:
+                    new_g = g + weight
+                    new_f = new_g + heuristic[neighbour]
+                    print(
+                        f"  Adding {neighbour}: "
+                        f"g={new_g}, h={heuristic[neighbour]}, f={new_f}"
+                    )
+                    heapq.heappush(
+                        pq,
+                        (new_f, new_g, neighbour, path + [neighbour])
+                    )
+
+        step += 1
+
+    print("No path found")
+
+
+# ----------- Dynamic Input -----------
+v = int(input("Enter number of vertices: "))
+e = int(input("Enter number of edges: "))
+
+graph = {}
+
+print("Enter vertex names:")
+for _ in range(v):
+    vertex = input()
+    graph[vertex] = []
+
+print("Enter edges (u v weight):")
+for _ in range(e):
+    u, v1, w = input().split()
+    w = int(w)
+    graph[u].append((v1, w))
+    graph[v1].append((u, w))   # remove for directed graph
+
+heuristic = {}
+print("Enter heuristic values:")
+for _ in range(v):
+    node = input("Node name: ")
+    heuristic[node] = int(input(f"h({node}) = "))
+
+start = input("Enter start node: ")
+goal = input("Enter goal node: ")
+
+a_star_with_path(graph, heuristic, start, goal)
+
+
+6.	Ids
+def dls(graph, node, goal, depth, path):
+    print(f"Visiting: {node}, Depth left: {depth}")
+
+    if depth == 0 and node == goal:
+        return path + [node]
+
+    if depth > 0:
+        for neighbour in graph[node]:
+            result = dls(graph, neighbour, goal, depth - 1, path + [node])
+            if result:
+                return result
+
+    return None
+
+
+def ids(graph, start, goal, max_depth):
+    print("\n--- IDS Step-by-Step ---")
+
+    for depth in range(max_depth + 1):
+        print(f"\nDepth Limit = {depth}")
+        result = dls(graph, start, goal, depth, [])
+
+        if result:
+            print("\nGoal Found!")
+            print("Path:", " -> ".join(result))
+            print("Depth:", depth)
+            return
+
+    print("Goal not found")
+
+
+# ----------- Dynamic Input -----------
+v = int(input("Enter number of vertices: "))
+e = int(input("Enter number of edges: "))
+
+graph = {}
+
+print("Enter vertex names:")
+for _ in range(v):
+    vertex = input()
+    graph[vertex] = []
+
+print("Enter edges (u v):")
+for _ in range(e):
+    u, v1 = input().split()
+    graph[u].append(v1)
+
+start = input("Enter start node: ")
+goal = input("Enter goal node: ")
+max_depth = int(input("Enter max depth: "))
+
+ids(graph, start, goal, max_depth)
+
+7.	Missioanires and cannibals
+from collections import deque
+
+def is_safe(m_left, c_left):
+    m_right = 3 - m_left
+    c_right = 3 - c_left
+
+    if m_left > 0 and c_left > m_left:
+        return False
+    if m_right > 0 and c_right > m_right:
+        return False
+    return True
+
+
+def get_next_states(state):
+    m, c, boat = state
+    moves = [(2,0), (0,2), (1,0), (0,1), (1,1)]
+    next_states = []
+
+    for m_move, c_move in moves:
+        if boat == 0:
+            new_m = m - m_move
+            new_c = c - c_move
+            new_boat = 1
+        else:
+            new_m = m + m_move
+            new_c = c + c_move
+            new_boat = 0
+
+        if 0 <= new_m <= 3 and 0 <= new_c <= 3:
+            if is_safe(new_m, new_c):
+                next_states.append((new_m, new_c, new_boat))
+
+    return next_states
+
+
+def bfs():
+    start_state = (3, 3, 0)
+    goal_state = (0, 0, 1)
+
+    queue = deque()
+    queue.append((start_state, []))
+    visited = set()
+
+    while queue:
+        current_state, path = queue.popleft()
+
+        if current_state == goal_state:
+            return path + [current_state]
+
+        visited.add(current_state)
+
+        for next_state in get_next_states(current_state):
+            if next_state not in visited:
+                queue.append((next_state, path + [current_state]))
+
+    return None
+
+
+solution = bfs()
+
+print("Solution Path:\n")
+for step in solution:
+    print(step)
+
+8.	Tsp
+9.	import random
+10.	def calculate_cost(tour, dist):
+11.	    cost=0
+12.	    for i in range(len(tour)):
+13.	        cost+=dist[tour[i]][tour[(i+1)%len(tour)]]
+14.	    return cost
+15.	def hill_climb(dist):
+16.	    n=len(dist)
+17.	    current=list(range(n))
+18.	    random.shuffle(current)
+19.	    current_cost=calculate_cost(current, dist)
+20.	    improved=True
+21.	    while improved:
+22.	        improved=False
+23.	        for i in range(n):
+24.	            for j in range(i+1,n): 
+25.	                neighbour=current[:]
+26.	                neighbour[i],neighbour[j]=neighbour[j],neighbour[i]
+27.	                neighbour_cost=calculate_cost(neighbour, dist)
+28.	                if neighbour_cost<current_cost:
+29.	                    current=neighbour
+30.	                    current_cost=neighbour_cost
+31.	                    improved=True
+32.	    return current,current_cost
+33.	
+34.	n=int(input("Enter the number of cities: "))
+35.	dist=[]
+36.	print("Enter the distance matrix:")
+37.	for _ in range(n):
+38.	    dist.append(list(map(int,input().split())))
+39.	tour,cost=hill_climb(dist)
+40.	print("Tour:",tour)
+41.	print("Cost:",cost) 
+42.	
+
+43.	8 queen
+44.	def is_safe(assignment,row,col):
+45.	    for r in range(row):
+46.	        if assignment[r]==col or abs(assignment[r]-col)==abs(r-row):
+47.	            return False
+48.	    return True
+49.	def backtracking(assignment,row,n):
+50.	    if row==n:
+51.	        return True
+52.	    for col in range(n):
+53.	        if is_safe(assignment,row,col):
+54.	            assignment[row]=col
+55.	            if backtracking(assignment,row+1,n):
+56.	                return True
+57.	            assignment[row]=-1
+58.	    return False
+59.	    
+60.	n=int(input("enter a number:"))
+61.	assignment=[-1]*n
+62.	if backtracking(assignment,0,n):
+63.	    print("solution found")
+64.	    for r in range(n):
+65.	        for c in range(n):
+66.	            if assignment[r]==c:
+67.	                print("Q",end=" ")
+68.	            else:
+69.	                print(".",end=" ")
+70.	        print()
+71.	else:
+72.	    print("solution not found")
+
+10. water jug
+
+import heapq
+def heuristic(state, target):
+    return abs(state[0]-target) + abs(state[1]-target)
+
+def a_star(cap_a, cap_b, target):
+    start=(0, 0)  # initial state (0 liters in both jugs)
+    pq=[]
+    heapq.heappush(pq,(0+heuristic(start, target),0, start, []))  
+    visited=set()
+    while pq:
+        f,g,state,path=heapq.heappop(pq)
+        if state in visited:
+            continue
+        visited.add(state)
+        path=path+[state]
+        if target in state:
+            return path
+        x,y=state
+        successors=[(cap_a,y),(x,cap_b),(0,y),(x,0),(min(x+cap_b-y,cap_a),min(y+cap_a-x,cap_b))]
+        for s in successors:
+            if s not in visited:
+                heapq.heappush(pq,(g+1+heuristic(s,target),g+1,s,path))
+    return None
+cap_a=int(input("enter capacity of a:"))
+cap_b=int(input("enter capacity of b:"))
+target=int(input("enter capacity of target:"))
+solution=a_star(cap_a,cap_b,target)
+if solution:
+    print("solution steps:")
+    for step in solution:
+        print(step)             
+else:    print("no solution found")  
+
+
+
+
+
+11. Apply Alpha Beta Pruning in Tic Tac Toe problem  
+AIM: To apply Alpha Beta Pruning in Tic Tac Toe problem 
+ALGORITHM/CODE: 
+import math 
+ 
+board = [" " for _ in range(9)] 
+ 
+def print_board(): 
+    for i in range(3): 
+        print(board[i*3] + "|" + board[i*3+1] + "|" + board[i*3+2]) 
+        if i < 2: 
+            print("-+-+-") 
+ 
+def check_winner(player): 
+    win_positions = [ 
+        [0,1,2],[3,4,5],[6,7,8], 
+        [0,3,6],[1,4,7],[2,5,8], 
+        [0,4,8],[2,4,6] 
+    ] 
+    for pos in win_positions: 
+        if board[pos[0]] == board[pos[1]] == board[pos[2]] == player: 
+            return True 
+    return False 
+ 
+def is_full(): 
+    return " " not in board 
+ 
+def minimax(alpha, beta, is_max): 
+     
+    if check_winner("O"): 
+        return 1 
+    if check_winner("X"): 
+        return -1 
+    if is_full(): 
+        return 0 
+ 
+    if is_max: 
+        best = -math.inf 
+        for i in range(9): 
+            if board[i] == " ": 
+                board[i] = "O" 
+                val = minimax(alpha, beta, False) 
+                board[i] = " " 
+                best = max(best, val) 
+                alpha = max(alpha, best) 
+                if beta <= alpha: 
+                    break 
+        return best 
+ 
+    else: 
+        best = math.inf 
+        for i in range(9): 
+            if board[i] == " ": 
+                board[i] = "X" 
+                val = minimax(alpha, beta, True) 
+                board[i] = " " 
+                best = min(best, val) 
+                beta = min(beta, best) 
+                if beta <= alpha: 
+                    break 
+        return best 
+ 
+def best_move(): 
+    best_val = -math.inf 
+    move = -1 
+ 
+    for i in range(9): 
+        if board[i] == " ": 
+            board[i] = "O" 
+            move_val = minimax(-math.inf, math.inf, False) 
+            board[i] = " " 
+ 
+            if move_val > best_val: 
+                move = i 
+                best_val = move_val 
+ 
+    board[move] = "O" 
+ 
+def play(): 
+    while True: 
+        print_board() 
+        pos = int(input("Enter position (0-8): ")) 
+        if board[pos] == " ": 
+            board[pos] = "X" 
+ 
+        if check_winner("X"): 
+            print_board() 
+            print("You win!") 
+            break 
+ 
+        if is_full(): 
+            print("Draw!") 
+            break 
+ 
+        best_move() 
+ 
+        if check_winner("O"): 
+            print_board() 
+            print("AI wins!") 
+            break 
+ 
+play() 
+
+
+12. wumpus
+
+from collections import deque
+
+def get_adjacent(x, y, n):
+    neighbors = []
+    for dx, dy in [(-1,0),(1,0),(0,-1),(0,1)]:
+        nx, ny = x + dx, y + dy
+        if 1 <= nx <= n and 1 <= ny <= n:
+            neighbors.append((nx, ny))
+    return neighbors
+
+def solve_wumpus():
+    print("=" * 50)
+    print("    WUMPUS WORLD — Propositional Logic")
+    print("=" * 50)
+
+    n = int(input("Enter grid size N (e.g. 4 for 4x4): "))
+
+    def parse_pos(prompt):
+        while True:
+            try:
+                raw = input(prompt).strip()
+                x, y = map(int, raw.split(","))
+                if 1 <= x <= n and 1 <= y <= n:
+                    return (x, y)
+                print(f"  Position must be within 1–{n}. Try again.")
+            except:
+                print("  Enter as x,y (e.g. 3,2)")
+
+    wumpus = parse_pos("Wumpus position (x,y), not (1,1): ")
+    gold = parse_pos("Gold position (x,y): ")
+    num_pits = int(input("Number of pits: "))
+
+    pits = set()
+    for i in range(num_pits):
+        pit = parse_pos(f"  Pit {i+1} position (x,y), not (1,1): ")
+        pits.add(pit)
+
+    agent = (1, 1)
+    visited = set()
+    safe = set()
+    visited.add(agent)
+    safe.add(agent)
+
+    score = 0
+    step = 0
+
+    def get_percepts(pos):
+        adj = get_adjacent(pos[0], pos[1], n)
+        stench = wumpus in adj
+        breeze = any(p in pits for p in adj)
+        glitter = (pos == gold)
+        return stench, breeze, glitter
+
+    def mark_safe(pos, stench, breeze):
+        adj = get_adjacent(pos[0], pos[1], n)
+        if not stench and not breeze:
+            for cell in adj:
+                safe.add(cell)
+
+    def find_next_safe():
+        for cell in sorted(safe):
+            if cell not in visited:
+                return cell
+        return None
+
+    print("\n--- SIMULATION START ---")
+    print(f"Agent starts at (1,1). Goal: Grab Gold at {gold} and return.\n")
+
+    while True:
+        step += 1
+        score -= 1
+
+        stench, breeze, glitter = get_percepts(agent)
+
+        print(f"Step {step}: Agent at {agent}")
+        percepts = []
+        if stench:
+            percepts.append("Stench")
+        if breeze:
+            percepts.append("Breeze")
+        if glitter:
+            percepts.append("Glitter ✨")
+        print(f"  Percepts: {', '.join(percepts) if percepts else 'None'}")
+
+        mark_safe(agent, stench, breeze)
+        print(f"  Known safe: {sorted(safe)}")
+
+        if glitter:
+            score += 1000
+            print("  ACTION: GRAB GOLD! Score += 1000")
+            print("\n✅ SUCCESS! Agent grabbed the gold!")
+            print(f"   Final Score: {score}")
+            return
+
+        next_cell = find_next_safe()
+
+        if next_cell is None:
+            adj = get_adjacent(agent[0], agent[1], n)
+            moved = False
+            for cell in adj:
+                if cell not in visited:
+                    next_cell = cell
+                    moved = True
+                    break
+            if not moved:
+                print("\n  No safe unvisited cell reachable. Agent gives up.")
+                print(f"   Final Score: {score}")
+                return
+
+        print(f"  ACTION: MOVE to {next_cell}")
+        agent = next_cell
+        visited.add(agent)
+        safe.add(agent)
+
+        if agent in pits:
+            score -= 1000
+            print(f"\n Agent fell into a Pit at {agent}! Game Over.")
+            print(f"   Final Score: {score}")
+            return
+
+        if agent == wumpus:
+            score -= 1000
+            print(f"\n Agent eaten by Wumpus at {agent}! Game Over.")
+            print(f"   Final Score: {score}")
+            return
+
+        print()
+
+if __name__ == "__main__":
+    solve_wumpus()
+
+14. 
+# simple knowledge base
+facts = set()
+rules = []
+
+# input facts
+n = int(input("Enter number of facts: "))
+for i in range(n):
+    p = input("Predicate: ")
+    c = input("Constant: ")
+    facts.add((p.lower(), c.lower()))
+
+# input rules
+r = int(input("Enter number of rules (P->Q): "))
+for i in range(r):
+    a = input("If: ")
+    b = input("Then: ")
+    rules.append((a.lower(), b.lower()))
+
+# forward chaining
+def infer():
+    changed = True
+    while changed:
+        changed = False
+        new_facts = set()
+        for (p, c) in facts:
+            for (a, b) in rules:
+                if p == a:
+                    if (b, c) not in facts:
+                        new_facts.add((b, c))
+                        changed = True
+        facts.update(new_facts)
+
+# menu
+while True:
+    print("\n1.Add Fact  2.Query  3.Show  4.Exit")
+    ch = input("Choice: ")
+
+    if ch == "1":
+        p = input("Predicate: ")
+        c = input("Constant: ")
+        facts.add((p.lower(), c.lower()))
+
+    elif ch == "2":
+        p = input("Predicate: ")
+        c = input("Constant: ")
+        infer()
+        if (p.lower(), c.lower()) in facts:
+            print("TRUE")
+        else:
+            print("FALSE")
+
+    elif ch == "3":
+        infer()
+        print("\nFacts:")
+        for f in facts:
+            print(f"{f[0].capitalize()}({f[1].capitalize()})")
+
+    elif ch == "4":
+        break
+
+    else:
+        print("Invalid")
+
+OR
+class FOL_KB: 
+    def __init__(self): 
+        self.unary_facts = {} 
+        self.binary_facts = {} 
+        self.unary_rules = [] 
+        self.binary_rules = [] 
+        self.constants = set() 
+ 
+    def add_constant(self, c): 
+        self.constants.add(c) 
+ 
+    def assert_unary(self, pred, const): 
+        self.add_constant(const) 
+        key = (pred.lower(), const.lower()) 
+        if key not in self.unary_facts: 
+            self.unary_facts[key] = True 
+            return True 
+        return False 
+ 
+    def assert_binary(self, pred, c1, c2): 
+        self.add_constant(c1) 
+        self.add_constant(c2) 
+        key = (pred.lower(), c1.lower(), c2.lower()) 
+        if key not in self.binary_facts: 
+            self.binary_facts[key] = True 
+            return True 
+        return False 
+ 
+    def add_unary_rule(self, ante, cons): 
+        self.unary_rules.append((ante.lower(), cons.lower())) 
+ 
+    def forward_chain(self): 
+        changed = True 
+        while changed: 
+            changed = False 
+            for ante, cons in self.unary_rules: 
+                for (p, c) in list(self.unary_facts.keys()): 
+                    if p == ante: 
+                        if self.assert_unary(cons, c): 
+                            changed = True 
+ 
+    def query(self, pred, const): 
+        self.forward_chain() 
+        return (pred.lower(), const.lower()) in self.unary_facts 
+ 
+    def list_facts(self): 
+        print("\nKnown Facts:") 
+        for (p, c) in self.unary_facts.keys(): 
+            print(f"{p.capitalize()}({c.capitalize()})") 
+ 
+ 
+def menu(): 
+    kb = FOL_KB() 
+ 
+    print("FIRST ORDER LOGIC KNOWLEDGE BASE") 
+ 
+    # -------- Dynamic Input -------- 
+    n = int(input("Enter number of unary facts: ")) 
+ 
+    for i in range(n): 
+        pred = input("Predicate: ") 
+        const = input("Constant: ") 
+        kb.assert_unary(pred, const) 
+ 
+    r = int(input("Enter number of rules (P(x) -> Q(x)): ")) 
+ 
+    for i in range(r): 
+        ante = input("Antecedent predicate: ") 
+        cons = input("Consequent predicate: ") 
+        kb.add_unary_rule(ante, cons) 
+ 
+    # -------- Menu -------- 
+    while True: 
+        print("\n1. Add Fact") 
+        print("2. Query") 
+        print("3. Show Facts") 
+        print("4. Exit") 
+ 
+        choice = input("Enter choice: ") 
+ 
+        if choice == "1": 
+            pred = input("Predicate: ") 
+            const = input("Constant: ") 
+            kb.assert_unary(pred, const) 
+ 
+        elif choice == "2": 
+            pred = input("Predicate: ") 
+            const = input("Constant: ") 
+            if kb.query(pred, const): 
+                print("TRUE") 
+            else: 
+                print("FALSE") 
+ 
+        elif choice == "3": 
+            kb.forward_chain() 
+            kb.list_facts() 
+ 
+        elif choice == "4": 
+            break 
+ 
+        else: 
+            print("Invalid choice") 
+ 
+ 
+if __name__ == "__main__": 
+    menu()
+
+15.
+
+Solving Monkeys and Bananas problem using planning techniques. 
+AIM : To sove Monkeys and Bananas problem using planning techniques 
+ALGORITHM /CODE : 
+# Monkey Banana Problem using Planning (Pure Python) 
+ 
+class State: 
+    def __init__(self, monkey_pos, box_pos, on_box, has_banana): 
+        self.monkey_pos = monkey_pos 
+        self.box_pos = box_pos 
+        self.on_box = on_box 
+        self.has_banana = has_banana 
+ 
+    def show(self): 
+        print(f"Monkey at: {self.monkey_pos}, Box at: 
+{self.box_pos}, " 
+              f"On Box: {self.on_box}, Has Banana: 
+{self.has_banana}") 
+ 
+# Actions 
+def move(state, to): 
+    if not state.on_box: 
+        print(f"Action: MOVE from {state.monkey_pos} to {to}") 
+        state.monkey_pos = to 
+ 
+def push_box(state, to): 
+    if state.monkey_pos == state.box_pos and not state.on_box: 
+        print(f"Action: PUSH BOX from {state.box_pos} to {to}") 
+        state.monkey_pos = to 
+        state.box_pos = to 
+ 
+def climb_box(state): 
+    if state.monkey_pos == state.box_pos and not state.on_box: 
+        print("Action: CLIMB BOX") 
+        state.on_box = True 
+ 
+def grab_banana(state, banana_pos): 
+    if state.monkey_pos == banana_pos and state.on_box: 
+        print("Action: GRAB BANANA 🍌") 
+        state.has_banana = True 
+ 
+# Planning Function 
+def solve(state, banana_pos): 
+    print("\n--- Initial State ---") 
+    state.show() 
+ 
+    print("\n--- Planning Steps ---") 
+ 
+    # Step 1: Move monkey to box 
+    if state.monkey_pos != state.box_pos: 
+        move(state, state.box_pos) 
+ 
+    # Step 2: Push box to banana location 
+    if state.box_pos != banana_pos: 
+        push_box(state, banana_pos) 
+ 
+    # Step 3: Climb box 
+    if not state.on_box: 
+        climb_box(state) 
+ 
+    # Step 4: Grab banana 
+    if not state.has_banana: 
+        grab_banana(state, banana_pos) 
+ 
+    print("\n--- Final State ---") 
+    state.show() 
+ 
+# MAIN 
+def main(): 
+    print("=== Monkey Banana Problem ===") 
+ 
+    monkey_pos = input("Enter Monkey Position (A/B/C): ") 
+    box_pos = input("Enter Box Position (A/B/C): ") 
+    banana_pos = input("Enter Banana Position (A/B/C): ") 
+ 
+    state = State(monkey_pos, box_pos, False, False) 
+ 
+    solve(state, banana_pos) 
+ 
+if __name__ == "__main__": 
+    main()
+16. 
+Solving Block World puzzle using planning techniques.  
+AIM : To Solve Block World puzzle using planning techniques 
+ALGORITHM / CODE : 
+# Block World using Goal Stack Planning 
+ 
+class State: 
+    def __init__(self): 
+        self.on = {}       # on[X] = Y means X is on Y 
+        self.clear = set() # blocks with nothing on top 
+        self.holding = None 
+        self.arm_empty = True 
+ 
+    def copy(self): 
+        new = State() 
+        new.on = self.on.copy() 
+        new.clear = self.clear.copy() 
+        new.holding = self.holding 
+        new.arm_empty = self.arm_empty 
+        return new 
+ 
+# Actions 
+def pickup(state, x): 
+    if state.arm_empty and x in state.clear and state.on[x] == 
+'table': 
+        state.holding = x 
+        state.arm_empty = False 
+        state.clear.remove(x) 
+        state.on[x] = None 
+        print(f"Action: PICKUP({x})") 
+        return True 
+    return False 
+ 
+def putdown(state, x): 
+    if state.holding == x: 
+        state.on[x] = 'table' 
+        state.clear.add(x) 
+        state.holding = None 
+        state.arm_empty = True 
+        print(f"Action: PUTDOWN({x})") 
+        return True 
+    return False 
+ 
+def stack(state, x, y): 
+    if state.holding == x and y in state.clear: 
+        state.on[x] = y 
+        state.clear.add(x) 
+        state.clear.remove(y) 
+        state.holding = None 
+        state.arm_empty = True 
+        print(f"Action: STACK({x}, {y})") 
+        return True 
+    return False 
+ 
+def unstack(state, x, y): 
+    if state.arm_empty and state.on[x] == y and x in state.clear: 
+        state.holding = x 
+        state.arm_empty = False 
+        state.clear.add(y) 
+        state.clear.remove(x) 
+        state.on[x] = None 
+        print(f"Action: UNSTACK({x}, {y})") 
+        return True 
+    return False 
+ 
+# Planning function (simple goal matching) 
+def solve(initial, goal): 
+    state = initial.copy() 
+ 
+    print("\n--- Planning Steps ---") 
+ 
+    # Step 1: Clear everything to table 
+    for x in list(state.on.keys()): 
+        if state.on[x] != 'table': 
+            y = state.on[x] 
+            if x in state.clear: 
+                unstack(state, x, y) 
+                putdown(state, x) 
+ 
+    # Step 2: Achieve goal stacking 
+    for x in goal.on: 
+        if goal.on[x] != 'table': 
+            y = goal.on[x] 
+ 
+            if state.on[x] == 'table': 
+                pickup(state, x) 
+                stack(state, x, y) 
+ 
+    print("\n--- Final State ---") 
+    print(state.on) 
+ 
+# MAIN 
+def main(): 
+    print("=== Block World Problem ===") 
+ 
+    initial = State() 
+    goal = State() 
+ 
+    blocks = input("Enter blocks (space separated, e.g. A B C): 
+").split() 
+ 
+    print("\nEnter Initial State:") 
+    for b in blocks: 
+        loc = input(f"{b} is on (block/table): ") 
+        initial.on[b] = loc 
+ 
+    # Set clear blocks 
+    initial.clear = set(blocks) 
+    for b in blocks: 
+        if initial.on[b] != 'table': 
+            if initial.on[b] in initial.clear: 
+                initial.clear.remove(initial.on[b]) 
+ 
+    print("\nEnter Goal State:") 
+    for b in blocks: 
+        loc = input(f"{b} should be on (block/table): ") 
+        goal.on[b] = loc 
+ 
+    goal.clear = set(blocks) 
+ 
+    solve(initial, goal) 
+ 
+if __name__ == "__main__": 
+    main()
+
+17.
+Constructing Bayesian Network for joint distribution problems.  
+AIM : To construct Bayesian Network for joint distribution problems 
+ALGORITHM / CODE : 
+# Pure Python Bayesian Network (No external libraries) 
+ 
+# Function to get valid probabilities 
+def get_probs(prompt, n): 
+    while True: 
+        try: 
+            vals = list(map(float, input(prompt).split())) 
+            if len(vals) != n: 
+                print(f"Enter exactly {n} values.") 
+                continue 
+            if any(v < 0 or v > 1 for v in vals): 
+                print("Values must be between 0 and 1.") 
+                continue 
+            return vals 
+        except: 
+            print("Invalid input!") 
+ 
+# Joint Probability Calculation 
+def joint_prob(c, s, r, w, P_C, P_S_C, P_R_C, P_W_SR): 
+    p_c = P_C[c] 
+    p_s = P_S_C[c][s] 
+    p_r = P_R_C[c][r] 
+    p_w = P_W_SR[s][r][w] 
+    return p_c * p_s * p_r * p_w 
+ 
+# Marginal / Conditional using enumeration 
+def query(query_var, evidence, P_C, P_S_C, P_R_C, P_W_SR): 
+    vars_list = ['C', 'S', 'R', 'W'] 
+    total = [0, 0] 
+ 
+    # iterate all combinations (2^4 = 16) 
+    for c in [0,1]: 
+        for s in [0,1]: 
+            for r in [0,1]: 
+                for w in [0,1]: 
+                    assignment = {'C':c,'S':s,'R':r,'W':w} 
+ 
+                    # check evidence match 
+                    valid = True 
+                    for ev in evidence: 
+                        if assignment[ev] != evidence[ev]: 
+                            valid = False 
+                            break 
+                    if not valid: 
+                        continue 
+ 
+                    jp = joint_prob(c, s, r, w, P_C, P_S_C, P_R_C, 
+P_W_SR) 
+ 
+                    total[assignment[query_var]] += jp 
+ 
+    # normalize 
+    s = total[0] + total[1] 
+    if s == 0: 
+        return [0,0] 
+    return [total[0]/s, total[1]/s] 
+ 
+def main(): 
+    print("\n=== Bayesian Network (Pure Python) ===") 
+ 
+    # Input probabilities 
+    P_C = get_probs("Enter P(C=0) P(C=1): ", 2) 
+ 
+    s_vals = get_probs("Enter P(S=1|C=0) P(S=1|C=1): ", 2) 
+    P_S_C = [[1 - s_vals[0], s_vals[0]], 
+             [1 - s_vals[1], s_vals[1]]] 
+ 
+    r_vals = get_probs("Enter P(R=1|C=0) P(R=1|C=1): ", 2) 
+    P_R_C = [[1 - r_vals[0], r_vals[0]], 
+             [1 - r_vals[1], r_vals[1]]] 
+ 
+    w_vals = get_probs("Enter P(W=1|S,R) for 00 01 10 11: ", 4) 
+ 
+    # Convert to 3D table 
+    P_W_SR = [ 
+        [[1 - w_vals[0], w_vals[0]], [1 - w_vals[1], w_vals[1]]], 
+        [[1 - w_vals[2], w_vals[2]], [1 - w_vals[3], w_vals[3]]] 
+    ] 
+ 
+    while True: 
+        print("\nVariables: C (Cloudy), S (Sprinkler), R (Rain), W 
+(WetGrass)") 
+        q = input("Enter query variable (C/S/R/W) or exit: 
+").upper() 
+ 
+        if q == "EXIT": 
+            break 
+ 
+        if q not in ['C','S','R','W']: 
+            print("Invalid variable!") 
+            continue 
+ 
+        evidence = {} 
+        n = int(input("Number of evidence variables: ")) 
+ 
+        for _ in range(n): 
+            var = input("Enter variable: ").upper() 
+            val = int(input("Enter value (0/1): ")) 
+            evidence[var] = val 
+ 
+        result = query(q, evidence, P_C, P_S_C, P_R_C, P_W_SR) 
+ 
+        print(f"\nResult: P({q}=0) = {result[0]:.4f}, P({q}=1) = 
+{result[1]:.4f}") 
+ 
+if __name__ == "__main__": 
+    main()
