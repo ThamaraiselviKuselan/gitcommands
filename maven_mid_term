@@ -149,3 +149,198 @@ src/test/java/com/example/AppTest.java
 Run tests using:
 
 mvn test
+
+4) Factorial Calculator
+App.java
+package com.example;
+
+public class App {
+
+    public long factorial(int n) {
+        if (n < 0) throw new IllegalArgumentException("Negative not allowed");
+        long fact = 1;
+        for (int i = 1; i <= n; i++) {
+            fact *= i;
+        }
+        return fact;
+    }
+
+    public static void main(String[] args) {
+        App obj = new App();
+        int num = 5;
+        System.out.println("Factorial of " + num + " = " + obj.factorial(num));
+    }
+}
+AppTest.java
+package com.example;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class AppTest {
+
+    App obj = new App();
+
+    @Test
+    public void testFactorial() {
+        assertEquals(120, obj.factorial(5));
+    }
+}
+✅ 5) Palindrome Checker
+App.java
+package com.example;
+
+public class App {
+
+    public boolean isPalindrome(int num) {
+        int original = num, rev = 0;
+
+        while (num != 0) {
+            rev = rev * 10 + num % 10;
+            num /= 10;
+        }
+
+        return original == rev;
+    }
+
+    public static void main(String[] args) {
+        App obj = new App();
+        int num = 121;
+
+        if (obj.isPalindrome(num))
+            System.out.println(num + " is Palindrome");
+        else
+            System.out.println(num + " is Not Palindrome");
+    }
+}
+AppTest.java
+package com.example;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class AppTest {
+
+    App obj = new App();
+
+    @Test
+    public void testPalindrome() {
+        assertTrue(obj.isPalindrome(121));
+    }
+
+    @Test
+    public void testNotPalindrome() {
+        assertFalse(obj.isPalindrome(123));
+    }
+}
+✅ 6) Prime Number Checker
+App.java
+package com.example;
+
+public class App {
+
+    public boolean isPrime(int num) {
+        if (num <= 1) return false;
+
+        for (int i = 2; i <= num / 2; i++) {
+            if (num % i == 0)
+                return false;
+        }
+        return true;
+    }
+
+    public static void main(String[] args) {
+        App obj = new App();
+        int num = 7;
+
+        System.out.println(num + " is Prime? " + obj.isPrime(num));
+    }
+}
+AppTest.java
+package com.example;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class AppTest {
+
+    App obj = new App();
+
+    @Test
+    public void testPrime() {
+        assertTrue(obj.isPrime(7));
+    }
+
+    @Test
+    public void testNotPrime() {
+        assertFalse(obj.isPrime(8));
+    }
+}
+✅ 7) Even or Odd Checker
+App.java
+package com.example;
+
+public class App {
+
+    public boolean isEven(int num) {
+        return num % 2 == 0;
+    }
+
+    public static void main(String[] args) {
+        App obj = new App();
+        int num = 10;
+
+        System.out.println(num + " is Even? " + obj.isEven(num));
+    }
+}
+AppTest.java
+package com.example;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class AppTest {
+
+    App obj = new App();
+
+    @Test
+    public void testEven() {
+        assertTrue(obj.isEven(10));
+    }
+
+    @Test
+    public void testOdd() {
+        assertFalse(obj.isEven(7));
+    }
+}
+✅ 8) Maximum of Three Numbers
+App.java
+package com.example;
+
+public class App {
+
+    public int findMax(int a, int b, int c) {
+        return Math.max(a, Math.max(b, c));
+    }
+
+    public static void main(String[] args) {
+        App obj = new App();
+
+        System.out.println("Max: " + obj.findMax(10, 25, 15));
+    }
+}
+AppTest.java
+package com.example;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class AppTest {
+
+    App obj = new App();
+
+    @Test
+    public void testMax() {
+        assertEquals(25, obj.findMax(10, 25, 15));
+    }
+}
