@@ -1,0 +1,151 @@
+Got it — you want the same Maven-style structure (App.java + AppTest.java) for these 3 scenarios:
+
+Student Grade
+Addition Reverse Digits
+Average Salary
+
+I’ll give clean, ready-to-use code just like your example.
+
+✅ 1) Student Grade Calculator
+App.java
+package com.example;
+
+public class App {
+
+    public double calculateAverage(int m1, int m2, int m3) {
+        return (m1 + m2 + m3) / 3.0;
+    }
+
+    public String calculateGrade(double avg) {
+        if (avg >= 90) return "A";
+        else if (avg >= 75) return "B";
+        else if (avg >= 60) return "C";
+        else if (avg >= 40) return "D";
+        else return "F";
+    }
+
+    public static void main(String[] args) {
+        App obj = new App();
+
+        int m1 = 80, m2 = 85, m3 = 90;
+        double avg = obj.calculateAverage(m1, m2, m3);
+
+        System.out.println("Average: " + avg);
+        System.out.println("Grade: " + obj.calculateGrade(avg));
+    }
+}
+AppTest.java
+package com.example;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class AppTest {
+
+    App obj = new App();
+
+    @Test
+    public void testAverage() {
+        assertEquals(85.0, obj.calculateAverage(80, 85, 90), 0.01);
+    }
+
+    @Test
+    public void testGrade() {
+        assertEquals("B", obj.calculateGrade(85));
+    }
+}
+✅ 2) Addition & Reverse Digits
+App.java
+package com.example;
+
+public class App {
+
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public int reverse(int num) {
+        int rev = 0;
+        while (num != 0) {
+            rev = rev * 10 + num % 10;
+            num /= 10;
+        }
+        return rev;
+    }
+
+    public static void main(String[] args) {
+        App obj = new App();
+
+        int a = 123, b = 45;
+        int sum = obj.add(a, b);
+
+        System.out.println("Sum: " + sum);
+        System.out.println("Reversed Sum: " + obj.reverse(sum));
+    }
+}
+AppTest.java
+package com.example;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class AppTest {
+
+    App obj = new App();
+
+    @Test
+    public void testAddition() {
+        assertEquals(168, obj.add(123, 45));
+    }
+
+    @Test
+    public void testReverse() {
+        assertEquals(861, obj.reverse(168));
+    }
+}
+✅ 3) Average Salary Calculator
+App.java
+package com.example;
+
+public class App {
+
+    public double calculateAverageSalary(double s1, double s2, double s3) {
+        return (s1 + s2 + s3) / 3.0;
+    }
+
+    public static void main(String[] args) {
+        App obj = new App();
+
+        double s1 = 25000, s2 = 30000, s3 = 35000;
+
+        double avg = obj.calculateAverageSalary(s1, s2, s3);
+
+        System.out.println("Average Salary: " + avg);
+    }
+}
+AppTest.java
+package com.example;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class AppTest {
+
+    App obj = new App();
+
+    @Test
+    public void testAverageSalary() {
+        assertEquals(30000.0, obj.calculateAverageSalary(25000, 30000, 35000), 0.01);
+    }
+}
+🔥 Important Notes
+Use only ONE scenario at a time in your Maven project.
+
+Place files correctly:
+
+src/main/java/com/example/App.java
+src/test/java/com/example/AppTest.java
+
+Run tests using:
+
+mvn test
